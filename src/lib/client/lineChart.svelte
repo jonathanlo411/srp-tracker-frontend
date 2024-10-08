@@ -28,6 +28,7 @@
       return [];
     }
 
+    console.log(data)
     return data.map(entry => ({
       datetime: entry.datetime,
       top10: entry.data.slice(0, 10),
@@ -54,7 +55,6 @@
   }
 
   onMount(() => {
-    console.log(leaderboardData)
     const processedData = processLeaderboardData(leaderboardData);
     const chartData = createChartData(processedData);
 
