@@ -1,38 +1,20 @@
-# create-svelte
+# SRP Tracker
+<a  href="https://github.com/jonathanlo411/srp-tracker-frontend/releases"><img  src="https://img.shields.io/github/v/release/jonathanlo411/srp-tracker-frontend"></a><a  href="https://github.com/jonathanlo411/srp-tracker-frontend/blob/main/LICENSE"><img  src="https://img.shields.io/github/license/jonathanlo411/srp-tracker-frontend"></a>
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).
+## Overview
+SRP Tracker is a webapp used to track various data on the [official SRP timing leaderboards](https://hub.shutokorevivalproject.com/timing). Currently, it is tracking point leaderboard changes. If you are interested in using the API, view the [docs](https://github.com/jonathanlo411/srp-tracker-backend).
 
-## Creating a project
-
-If you're seeing this, you've probably already done this step. Congrats!
-
+## Local Usage
+1. Clone the repository.
+2. Install packages via `npm`.
 ```bash
-# create a new project in the current directory
-npm create svelte@latest
-
-# create a new project in my-app
-npm create svelte@latest my-app
+npm install
 ```
-
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
+3. Fill out your environment details into a `.env` mimicking the `sample.env`.
+4. Run the following to start locally.
+```
 npm run dev -- --open
 ```
 
-## Building
-
-To create a production version of your app:
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+## License
+This project is licensed under the GNU General Public License. See `LICENSE` for more information.
