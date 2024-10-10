@@ -113,7 +113,7 @@
             {#each positionChanges.slice(0, 10) as change}
               <div class='leaderboard-item position-changes'>
                 <h5 class='lb-1'>{change.name}</h5> 
-                <h5 class='lb-2'>{change.originalPosition === 101 ? '> 100' : change.originalPosition} → {change.newPosition}</h5>
+                <h5 class='lb-2'>{change.originalPosition === 101 ? '100+' : change.originalPosition} → {change.newPosition}</h5>
               </div>
             {/each}
           {:else}
@@ -250,5 +250,19 @@
     }
   }
 
+
+  /* Mobile Styling */
+  @media screen and (max-width: 1080px) {
+    #base { flex-direction: column; }
+    #main {
+      flex: auto;
+      margin: 1rem !important;
+    }
+    #side {
+      width: 100%;
+      flex: auto;
+      margin: 0 1rem !important;
+    }
+  }
 
 </style>

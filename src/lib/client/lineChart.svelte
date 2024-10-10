@@ -68,6 +68,7 @@
           datasets: chartData.datasets,
         },
         options: {
+          maintainAspectRatio: window.innerWidth > 1000,
           responsive: true,
           scales: {
             x: {
@@ -104,7 +105,18 @@
   });
 </script>
 
-<canvas bind:this={chartRef}></canvas>
+<div>
+  <canvas bind:this={chartRef}></canvas>
+</div>
 
 <style>
+
+  /* Mobile Styling */
+  @media screen and (max-width: 1080px) {
+    div {
+      position: relative;
+      height: 400px;
+    }
+  }
+
 </style>
