@@ -1,68 +1,20 @@
 <script lang='ts'>
-  import { PUBLIC_SRP_TRACKER_API_URL } from '$env/static/public';
   import { onMount } from 'svelte';
   import LineChart from "$lib/client/lineChart.svelte";
-
-  type Player = {
-    name: string;
-    rank: number;
-    points: number;
-  };
-
-  type LeaderboardSnapshot = {
-    data: Player[];
-    datetime: string;
-    leaderboard: string;
-  };
+  import {
+    fetchTrackerData,
+    calculatePositionChanges,
+    handleSearch
+  } from '$lib/client/util'
 
   let trackerData: LeaderboardSnapshot[] = [];
-  let trafficTrackerData: LeaderboardSnapshot[] = []
+  let trafficTrackerData: LeaderboardSnapshot[] = [];
   let isLoaded: boolean = false;
 
-  async function fetchTrackerData(): Promise<void> {
-    const rawTrackerData = await fetch(`${PUBLIC_SRP_TRACKER_API_URL}/leaderboard?leaderboard=Combined`);
-    trackerData = await rawTrackerData.json();
-
-    const rawTrafficTrackerData = await fetch(`${PUBLIC_SRP_TRACKER_API_URL}/leaderboard?leaderboard=Traffic`);
-    trafficTrackerData = await rawTrafficTrackerData.json();
-
-    isLoaded = true;
-  }
-
-  function calculatePositionChanges(data: LeaderboardSnapshot[]): { name: string, originalPosition: number, newPosition: number }[] {
-
-    if (data.length < 2) {
-      return []; 
-    }
-
-    const secondLast = data[data.length - 2]?.data;
-    const last = data[data.length - 1]?.data;
-
-    if (!secondLast || !last) {
-      return []; 
-    }
-
-    const changes = last.reduce((acc, player) => {
-      const previousEntry = secondLast.find(p => p.name === player.name);
-
-      if (
-        (previousEntry && previousEntry.rank > player.rank) ||
-        (!previousEntry && player.rank <= 100) 
-      ) {
-        acc.push({
-          name: player.name,
-          originalPosition: previousEntry ? previousEntry.rank : 101,
-          newPosition: player.rank,
-        });
-      }
-      return acc;
-    }, [] as { name: string, originalPosition: number, newPosition: number }[]);
-
-    return changes.sort((a, b) => a.newPosition - b.newPosition);
-  }
-
   onMount(async () => {
-    await fetchTrackerData();
+    trackerData = await fetchTrackerData('Combined');
+    trafficTrackerData = await fetchTrackerData('Traffic');
+    isLoaded = true
   });
 
   // Get the calculated changes after data is loaded
@@ -97,7 +49,17 @@
         <h3>Top Drivers</h3>
         <div class='leaderboard-list'>
           {#each trackerData.slice(-1)[0]?.data.slice(0, 10) as item}
-            <div class='leaderboard-item top-drivers'>
+            <!-- svelte-ignore a11y-click-events-have-key-events -->
+            <!-- svelte-ignore a11y-no-static-element-interactions -->
+            <div class='leaderboard-item top-drivers'
+              on:click={() => {handleSearch(item.name)}}
+              on:keydown={(event) => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                  handleSearch(item.name);
+                }
+              }}
+              aria-label={`Search for ${item.name}`}
+            >
               <h5 class='lb-1'>{item.rank}.</h5> 
               <h5 class='lb-2'>{item.name}</h5>
               <h5 class='lb-3'>{item.points} pts</h5>
@@ -111,7 +73,17 @@
         <div class='leaderboard-list'>
           {#if positionChanges.length > 0}
             {#each positionChanges.slice(0, 10) as change}
-              <div class='leaderboard-item position-changes'>
+              <!-- svelte-ignore missing-declaration -->
+              <!-- svelte-ignore a11y-no-static-element-interactions -->
+              <div class='leaderboard-item position-changes'
+                on:click={() => {handleSearch(change.name)}}
+                on:keydown={(event) => {
+                  if (event.key === 'Enter' || event.key === ' ') {
+                    handleSearch(change.name);
+                  }
+                }}
+                aria-label={`Search for ${change.name}`}
+              >
                 <h5 class='lb-1'>{change.name}</h5> 
                 <h5 class='lb-2'>{change.originalPosition === 101 ? '100+' : change.originalPosition} → {change.newPosition}</h5>
               </div>

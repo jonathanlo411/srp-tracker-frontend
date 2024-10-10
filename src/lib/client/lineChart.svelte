@@ -28,7 +28,6 @@
       return [];
     }
 
-    console.log(data)
     return data.map(entry => ({
       datetime: entry.datetime,
       top10: entry.data.slice(0, 10),
@@ -112,6 +111,10 @@
 <style>
 
   /* Mobile Styling */
+  div {
+    display: flex;
+    justify-content: space-evenly;
+  }
   @media screen and (max-width: 1080px) {
     div {
       position: relative;

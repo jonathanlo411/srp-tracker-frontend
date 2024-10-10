@@ -8,6 +8,31 @@ declare global {
 		// interface PageState {}
 		// interface Platform {}
 	}
+	
+  type Player = {
+    name: string;
+    rank: number;
+    points: number;
+  };
+
+  type LeaderboardSnapshot = {
+    data: Player[];
+    datetime: string;
+    leaderboard: string;
+  };
+
+  type LeaderboardOption = 
+    'Combined' |
+    'Clawies Selection Pack' |
+    'Default' |
+    'Traffic' |
+    'TrafficSlow'
+
+  type PositionChange = {
+    name: string;
+    originalPosition: number;
+    newPosition: number;
+  };
 }
 
 export {};
