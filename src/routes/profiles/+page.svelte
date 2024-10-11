@@ -103,6 +103,11 @@
       flex: auto;
       margin: 1rem !important;
     }
+
+    #search-container {
+      margin: 1rem auto;
+      width: 100%;
+    }
   }
 </style>
 

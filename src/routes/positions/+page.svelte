@@ -258,12 +258,18 @@
     }
   }
 
-
   /* Mobile Styling */
   @media screen and (max-width: 1080px) {
+    #main {
+      flex: auto;
+      margin: 1rem !important;
+    }
     #lb-section {
       flex-direction: column;
     }
-  }
 
+    .leaderboard {
+      width: 90%;
+    }
+  }
 </style>

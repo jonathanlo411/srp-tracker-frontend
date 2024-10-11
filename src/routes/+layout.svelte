@@ -89,4 +89,12 @@
   nav .nav-item:hover {
     border-bottom: 2px solid var(--highlight);
   }
+
+  
+  /* Mobile Styling */
+  @media screen and (max-width: 1080px) {
+    nav {
+      display: none;
+    }
+  }
 </style>
