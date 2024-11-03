@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { Chart } from 'chart.js/auto';
+  import namePool from '$lib/playerNameMappings.json'
 
   Chart.defaults.color = 'white';
   const gridColor = '#ccc';
@@ -22,15 +23,41 @@
   let chartInstance: Chart | null = null;
   let chartRef: HTMLCanvasElement;
 
+  // Function to get canonical name based on name pool
+  function getCanonicalName(name: string): string | null {
+    for (const [canonical, names] of Object.entries(namePool)) {
+      if (names.includes(name)) {
+        return canonical;
+      }
+    }
+    return null;
+  }
+
   function processLeaderboardData(data: LeaderboardEntry[]) {
-    if (!Array.isArray(data)) {
-      console.error('Data is not an array:', data);
+    if (!Array.isArray(data) || data.length === 0) {
+      console.error('Data is not an array or is empty:', data);
       return [];
     }
 
+    // Track the most recent names for each canonical player
+    const recentDisplayNames: Record<string, string> = {};
+
+    // Get the most recent top 10 players with mapped names
+    const recentTop10Names = data[data.length - 1].data.slice(0, 10).map(player => {
+      const canonicalName = getCanonicalName(player.name) || player.name;
+      recentDisplayNames[canonicalName] = player.name;  // Use the latest name for display
+      return canonicalName;
+    });
+
     return data.map(entry => ({
       datetime: entry.datetime,
-      top10: entry.data.slice(0, 10),
+      // Map each player to their canonical name and use the latest display name
+      top10: entry.data
+        .filter(player => recentTop10Names.includes(getCanonicalName(player.name) || player.name))
+        .map(player => ({
+          ...player,
+          name: recentDisplayNames[getCanonicalName(player.name) || player.name]  // Use recent display name
+        })),
     }));
   }
 
@@ -42,9 +69,15 @@
       return date.toLocaleDateString(); // Format to show only the date
     });
 
-    const datasets = data[0].top10.map((player, index) => ({
+    // Use the most recent top 10 players for the datasets
+    const recentTop10 = data[data.length - 1].top10;
+
+    const datasets = recentTop10.map((player, index) => ({
       label: player.name,
-      data: data.map(entry => entry.top10[index]?.points || 0),
+      data: data.map(entry => {
+        const playerData = entry.top10.find(p => p.name === player.name);
+        return playerData ? playerData.points : 0;
+      }),
       borderColor: `hsl(${(index / 10) * 360}, 70%, 50%)`,
       backgroundColor: 'rgba(0, 0, 0, 0)',
       fill: false,
@@ -109,7 +142,6 @@
 </div>
 
 <style>
-
   /* Mobile Styling */
   div {
     display: flex;
@@ -121,5 +153,4 @@
       height: 400px;
     }
   }
-
 </style>
